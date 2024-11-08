@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug</title>
+</head>
+<body>
+    <ul>
+        <li><a href="debug.html">debug.html</a></li>
+        <li><a href="index.html">index.html</a></li>
+    </ul>
+    <input type="text" id="text" name="date">
+    <button onclick="createCookie();">CREATE COOKIE</button>
+    <button onclick="clearCookie();">CLEAR</button>
+    <script>
+        function createCookie() {
+            let txt = document.getElementById("text");
+            document.cookie = txt.value;
+            alert("Cookie added");
+        }
+        function clearCookie() {
+            document.cookie = null;
+            alert("Cookie clear");
+        }
+    </script>
+</body>
+</html>

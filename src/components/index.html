@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .dd{
+            position: relative;
+            display: inline-block;
+        }
+        .menu{
+            position: absolute;
+            display: none;
+        }
+        .dd:hover > .menu{
+            display: block;
+        } 
+    </style>
+</head>
+<body>
+    <div class="dd">
+        <button class="btn">Hover me</button>
+        <div class="menu">
+            <li>11</li>
+            <li>22</li>
+            <li>33</li>
+            <li>44</li>
+        </div>
+    </div>
+    <h1 id="text"></h1>
+    <script>
+        // setInterval(() => {
+        //     window.location.reload();
+        // }, 1500)
+        document.getElementById("text").innerHTML = document.cookie;
+    </script>
+</body>
+</html>
