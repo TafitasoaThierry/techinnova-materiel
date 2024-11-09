@@ -13,7 +13,8 @@
             <div class="form-group">
                 <button class="send" @click="checkLogin()" :disabled="((id == '') || (passwd == ''))">Se connecter</button>
             </div>
-            <p style="color: red;"><small>{{ msg }}</small></p>
+            <p style="color: red;"><small>{{ msg }}</small></p><br>
+            <p style="color: white; text-align: center;"><a href="https://github.com/TafitasoaThierry" style="color: white;"><small>By Tafitasoa Thierry</small></a></p>
         </div>
     </div>
 </template>
@@ -84,7 +85,7 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-top: 20% ;
+        margin-top: 15% ;
         .form{
             width: 380px;
             padding: 20px;

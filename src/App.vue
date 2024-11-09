@@ -9,13 +9,13 @@
       <li class="menu"><router-link class="menu-bar" to="/utilisateur">Utilisateur</router-link></li>
       <li class="menu"><button class="sign-btn" @click="deconnecter()">Se déconnecter</button></li>
     </div>
-    <div class="dd">
+    <div class="dd" v-show="activeNav">
       <button class="btn btn-primary displayBtn"><i class="fa-solid fa-list"></i></button>
       <div class="display-menu">
         <li class="menu2"><router-link class="menu-bar2" to="/">Materiel</router-link></li>
         <li class="menu2"><router-link class="menu-bar2" to="/entreeSortie">Entrées-Sortie</router-link></li>
         <li class="menu2"><router-link class="menu-bar2" to="/utilisateur">Utilisateur</router-link></li>
-        <li class="menu2"><button class="sign-btn2" @click="deconnecter()">Se déconnecter</button></li>
+        <li class="menu2"><button class="sign-btn2" @click="deconnecter()" style="font-size: 13px;">Se déconnecter</button></li>
       </div>
     </div>
   </div>
@@ -457,6 +457,7 @@ export default {
           height: 200px;
           padding: 10px;
           background-color: #ffffff;
+          border-radius: 3px;
           box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5), -3px 3px 6px rgba(0, 0, 0, 0.5);
       }
       .dd:hover > .display-menu{
