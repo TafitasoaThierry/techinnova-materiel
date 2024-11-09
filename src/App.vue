@@ -462,11 +462,11 @@ export default {
       .dd:hover > .display-menu{
         display: block;
       }
-      @media screen and(max-width: 270px) {
-          .header, .container{
-              display: none;
-          }
-      }
+      // @media screen and(max-width: 270px) {
+      //     .header, .container{
+      //         display: none;
+      //     }
+      // }
   }
   @media screen and (max-width: 450px) {
         .add-edit{
