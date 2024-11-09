@@ -13,10 +13,11 @@
         <div class="box" id="main-box" v-show="search.length == 0">
             <ul class="box-content" v-for="materiel in  materiel" v-bind:key="materiel.numSerie">
                 <li><img  v-bind:src="materiel.image" class="img" width="100%" height="200px" style="border: 1px solid #595959; border-radius: 3px;"></li>
-                <li style="margin-top: 3px;">N°Serie: {{ materiel.numSerie }}</li>
-                <li>Nom: {{ materiel.nomMateriel }}</li>
-                <li>Marque: {{ materiel.marque }}</li>
-                <li>Etat: {{ materiel.etat }}</li>
+                <li style="margin-top: 3px;">{{ materiel.numSerie }}</li>
+                <li>{{ materiel.nomMateriel }} {{ materiel.marque }}</li>
+                <li v-if="materiel.etat == 'Bon'">Etat : <i class="fa-solid fa-star" style="color: #ffff00;"></i> <i class="fa-solid fa-star" style="color: #ffff00;"></i> <i class="fa-solid fa-star" style="color: #ffff00;"></i></li>
+                <li v-if="materiel.etat == 'Moyen'">Etat : <i class="fa-solid fa-star" style="color: #ffff00;"></i> <i class="fa-solid fa-star" style="color: #ffff00;"></i> <i class="fa-solid fa-star"></i></li>
+                <li v-if="materiel.etat == 'Détruit'">Etat : <i class="fa-solid fa-star" style="color: #ffff00;"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i></li>
                 <li v-if="materiel.occupation == 'Libre'">Occupation: <span style="color: green;" >{{ materiel.occupation }}</span></li>
                 <li v-else>Occupation: <span style="color: red;">{{ materiel.occupation }}</span></li>
                 <li style="display: flex; justify-content: right;">
@@ -39,7 +40,7 @@
         <div class="box" id="search-box" v-show="search.length > 0">
             <ul class="box-content" v-for="materielSearch in  materielSearch" v-bind:key="materielSearch.numSerie">
                 <li><img  v-bind:src="materielSearch.image" class="img" width="100%" height="200px" style="border: 1px solid rgba(0,0,0,0.3); border-radius: 3px;"></li>
-                <li style="margin-top: 3px;">N°Serie: {{ materielSearch.numSerie }}</li>
+                <li style="margin-top: 3px;">{{ materielSearch.numSerie }}</li>
                 <li>Nom: {{ materielSearch.nomMateriel }}</li>
                 <li>Marque: {{ materielSearch.marque }}</li>
                 <li>Etat: {{ materielSearch.etat }}</li>
@@ -146,6 +147,7 @@
 import axios from "axios"
 import "../styles/bootstrap-4.0.0-dist/bootstrap.min.css"
 import "../styles/fontawesome-6.6.0-web/css/all.min.css"
+import { url } from './point'
 
 export default {
     
@@ -211,7 +213,7 @@ export default {
                 "lieu": this.lieu
             }
 
-            axios.post("https://techinnova-latest.onrender.com/techinnova/api/activite/createActivite", activiteData) // send activite request
+            axios.post(url() + "techinnova/api/activite/createActivite", activiteData) // send activite request
             .then((response) => {
                 this.refActivite = response.data.refActivite; // get last refActivite
 
@@ -258,16 +260,16 @@ export default {
                         "refActivite": this.refActivite
                     }
 
-                    axios.get("https://techinnova-latest.onrender.com/techinnova/api/materiel/getByID/" + numSerie[i]) // get ETAT of each materiel
+                    axios.get(url() + "techinnova/api/materiel/getByID/" + numSerie[i]) // get ETAT of each materiel
                     .then((response) => {
                         utilisationData.etatSortie = response.data.etat;
                         
-                        axios.post("https://techinnova-latest.onrender.com/techinnova/api/utilisation/createUtilisation", utilisationData) // send UTILISATION request
+                        axios.post(url() + "techinnova/api/utilisation/createUtilisation", utilisationData) // send UTILISATION request
                         .then((response) => {
                             console.log(response.data);
 
                             //// update materiel etat 
-                            axios.get("https://techinnova-latest.onrender.com/techinnova/api/utilisation/getUtilisation/" + this.refActivite)
+                            axios.get(url() + "techinnova/api/utilisation/getUtilisation/" + this.refActivite)
                             .then((response) => {
                                 let u = response.data;
                                 let date = new Date();
@@ -285,11 +287,11 @@ export default {
                                 //// update materiel etat
                                 for(let k = 0; k < u.length; k++) {
                                     if(u[k].dateSortie == today) {
-                                        console.log("dateSortie = " + u[k].dateSortie);
+                                        //console.log("dateSortie = " + u[k].dateSortie);
 
-                                        axios.put("https://techinnova-latest.onrender.com/techinnova/api/materiel/updateMaterielOccupation/" + u[k].numSerie + "/Occupé")
-                                        .then((response) => {
-                                            console.log(response.data.numSerie);
+                                        axios.put(url() + "techinnova/api/materiel/updateMaterielOccupation/" + u[k].numSerie + "/Occupé")
+                                        .then(() => {
+                                            //console.log(response.data.numSerie);
                                             this.clearActivite();
                                         })
                                         .catch(error => console.log("error = " + error))
@@ -393,7 +395,7 @@ export default {
         // OBTENIR LES LISTES MATERIELS
         getMateriel() {
             if(document.cookie != "" && document.cookie != "null") {
-                axios.get("https://techinnova-latest.onrender.com/techinnova/api/materiel/getMateriel")
+                axios.get(url() + "techinnova/api/materiel/getMateriel")
                 .then((response) => {
                     this.materiel = [];
                     this.materiel = response.data;
@@ -402,7 +404,7 @@ export default {
                         this.materielTemp = this.materiel;
                     }
 
-                    axios.get("https://techinnova-latest.onrender.com/techinnova/api/utilisation/getUtilisation")
+                    axios.get(url() + "techinnova/api/utilisation/getUtilisation")
                     .then((response) => {
                         let u = response.data;
                         let date = new Date();
@@ -421,17 +423,9 @@ export default {
                         for(let k = 0; k < u.length; k++) {
                             if(u[k].dateSortie == today && u[k].dateEntree == "Non disponible") {
                                 //console.log("dateSortie = " + u[k].dateSortie);
-                                axios.put("https://techinnova-latest.onrender.com/techinnova/api/materiel/updateMaterielOccupation/" + u[k].numSerie + "/Occupé")
+                                axios.put(url() + "techinnova/api/materiel/updateMaterielOccupation/" + u[k].numSerie + "/Occupé")
                                 .then((response) => {
                                     if(response.numSerie == ""){
-                                        console.log("status.ok");
-                                    }
-                                })
-                                .catch(error => console.log(error))
-                            }else{
-                                axios.put("https://techinnova-latest.onrender.com/techinnova/api/materiel/updateMaterielOccupation/" + u[k].numSerie + "/Libre")
-                                .then((response) => {
-                                    if(response == undefined){
                                         console.log("status.ok");
                                     }
                                 })
@@ -525,7 +519,7 @@ export default {
                     "image": img64
                 }
                 
-                axios.post("https://techinnova-latest.onrender.com/techinnova/api/materiel/addMateriel", data)
+                axios.post(url() + "techinnova/api/materiel/addMateriel", data)
                 .then(response => console.log(response))
                 .catch(error => console.log(error))
 
@@ -558,7 +552,7 @@ export default {
                     "image": btoa(img)
                 }
             
-                axios.put("https://techinnova-latest.onrender.com/techinnova/api/materiel/updateMateriel/"+ this.numSerie, data)
+                axios.put(url() + "techinnova/api/materiel/updateMateriel/"+ this.numSerie, data)
                 .then(response => console.log(response))
                 .catch(error => console.log(error))
                 
@@ -593,7 +587,7 @@ export default {
                         "image": btoa(img64)
                     }
                 
-                    axios.put("https://techinnova-latest.onrender.com/techinnova/api/materiel/updateMateriel/"+ this.numSerie, data)
+                    axios.put(url() + "techinnova/api/materiel/updateMateriel/"+ this.numSerie, data)
                     .then(response => console.log(response))
                     .catch(error => console.log(error))
                     
@@ -621,7 +615,7 @@ export default {
         // ENVOYER UNE REQUETE VERS LA BASE DE DONNEES (DELETE) 
         remove() {
             if(confirm("Voulez-vous supprimer")) {
-                axios.delete("https://techinnova-latest.onrender.com/techinnova/api/materiel/deleteMateriel/" + this.numSerieTemp)
+                axios.delete(url() + "techinnova/api/materiel/deleteMateriel/" + this.numSerieTemp)
                 .then(response => console.log(response))
                 .catch(error => console.log(error))
                 for(let i = 0; i < this.materiel.length; i++){
@@ -651,7 +645,7 @@ export default {
 
         setInterval(() => {
             this.getMateriel();
-        }, 1500);
+        }, 500);
     }
 }
 </script>

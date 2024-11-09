@@ -84,6 +84,7 @@ import "./styles/bootstrap-4.0.0-dist/bootstrap.min.css";
 import "./styles/fontawesome-6.6.0-web/css/all.min.css";
 import Login from "./components/Login.vue";
 import axios from "axios";
+import { url } from './components/point';
 
 export default {
   name: "App",
@@ -136,7 +137,7 @@ export default {
     showEditForm() {
       this.edit = true;
 
-      axios.get("https://techinnova-latest.onrender.com/techinnova/api/utilisateur/get/" + document.cookie)
+      axios.get(url() +"techinnova/api/utilisateur/get/" + document.cookie)
         .then( (response) => {
           this.nom = response.data.nom;
           this.prenoms = response.data.prenoms;
@@ -162,7 +163,7 @@ export default {
             }
             
             if(confirm("Voulez-vous modifier ?")) {
-              axios.put("https://techinnova-latest.onrender.com/techinnova/api/utilisateur/updateUtilisateur/" + this.id, data)
+              axios.put(url() +"techinnova/api/utilisateur/updateUtilisateur/" + this.id, data)
               .then((response) => (console.log(response)))
               .then((error) => (console.log(error)))
 
@@ -188,7 +189,7 @@ export default {
             "mdp": this.mdp
           }
           if(confirm("Voulez-vous modifier ?")) {
-            axios.put("https://techinnova-latest.onrender.com/techinnova/api/utilisateur/updateUtilisateur/" + this.id, data)
+            axios.put(url() +"techinnova/api/utilisateur/updateUtilisateur/" + this.id, data)
             .then((response) => (console.log(response)))
             .then((error) => (console.log(error)))
 
@@ -232,7 +233,7 @@ export default {
         this.activeLoginInfo = true;
         this.activeNav = true;
         this.activeContent = true;
-        axios.get("https://techinnova-latest.onrender.com/techinnova/api/utilisateur/get/" + id)
+        axios.get(url() +"techinnova/api/utilisateur/get/" + id)
         .then( (response) => {
           this.nomLog = response.data.nom;
           this.prenomsLog = response.data.prenoms;
@@ -247,7 +248,7 @@ export default {
         this.activeLoginInfo = true;
         this.activeNav = true;
         this.activeContent = true;
-        axios.get("https://techinnova-latest.onrender.com/techinnova/api/utilisateur/get/" + this.$store.state.loginId)
+        axios.get(url() +"techinnova/api/utilisateur/get/" + this.$store.state.loginId)
         .then( (response) => {
           this.nom = response.data.nom;
           this.prenoms = response.data.prenoms;
@@ -268,8 +269,8 @@ export default {
       src: url("./styles/font/Nunito-SemiBold.ttf");
   }
   @font-face {
-      font-family: Poppins;
-      src: url("./styles/font/Poppins-Regular.ttf");
+      font-family: Sofia;
+      src: url("./styles/font/SOFIAPROSOFTBOLD.woff");
   }
   $co1: #FFFF00;
   $co2: #595959;
@@ -362,7 +363,7 @@ export default {
       top: 0%;
       left: 0%;
       right: 0;
-
+      
       .logo-field{
           .logo{
               width: $logo-wd;
@@ -462,7 +463,7 @@ export default {
         display: block;
       }
       @media screen and(max-width: 270px) {
-          .header{
+          .header, .container{
               display: none;
           }
       }

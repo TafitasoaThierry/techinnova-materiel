@@ -84,6 +84,7 @@
 
 <script>
 import axios from 'axios';
+import { url } from './point';
 
 export default {
     name: "UtilisationComponent",
@@ -112,12 +113,14 @@ export default {
     methods: {
         // READ
         getUtilisation() {
-            axios.get("https://techinnova-latest.onrender.com/techinnova/api/utilisateur/get/" + document.cookie)
+            axios.get(url() + "techinnova/api/utilisateur/get/" + document.cookie)
             .then( (user) => {
-                this.typeFromDB = user.data.typeUtilisateur;
-                axios.get("https://techinnova-latest.onrender.com/techinnova/api/utilisation/getUtilisation")
-                .then(response => this.utilisation = response.data)
-                .catch(error => console.log(error))
+                if(user.data != null) {
+                    this.typeFromDB = user.data.typeUtilisateur;
+                    axios.get(url() + "techinnova/api/utilisation/getUtilisation")
+                    .then(response => this.utilisation = response.data)
+                    .catch(error => console.log(error))
+                }
             })
             .catch((error) => (console.log(error)))
         },        
@@ -181,8 +184,37 @@ export default {
                 data.dateEntree = this.dateEntree.split("-").reverse().join("-");
             }
 
-            axios.put("https://techinnova-latest.onrender.com/techinnova/api/utilisation/updateUtilisation/" + this.idTemp, data)
-            .then(response => console.log(response))
+            axios.put(url() + "techinnova/api/utilisation/updateUtilisation/" + this.idTemp, data)
+            .then((response) => {
+                console.log(response);
+                
+                let date = new Date();
+                let dd = date.getDate().toString();
+                let mm = (date.getMonth() + 1).toString();
+                let yyyy = date.getFullYear();
+                if(mm.length == 1) {
+                    mm = "0" + mm;
+                }
+                if(dd.length == 1) {
+                    dd = "0" + dd;
+                }
+
+                let dateNN = `${dd}-${mm}-${yyyy}`;
+                if(data.dateSortie == dateNN && data.dateEntree == "Non disponible") {
+                    axios.put(url() + "techinnova/api/materiel/updateMaterielOccupation/" + this.numSerie + "/Occupé")
+                    .then((r) => {
+                        console.log(r);
+                    })
+                    .catch(error => console.log(error))
+                }else {
+                    axios.put(url() + "techinnova/api/materiel/updateMaterielOccupation/" + this.numSerie + "/Libre")
+                    .then((r) => {
+                        console.log(r);
+                    })
+                    .catch(error => console.log(error))
+                }
+                
+            })
             .catch(error => console.log(error))
 
             this.clearForm();
@@ -193,12 +225,12 @@ export default {
         remove() {
             console.log(this.idTemp);
             if(confirm("Voulez-vous supprimer")) {
-                axios.delete("https://techinnova-latest.onrender.com/techinnova/api/utilisation/deleteUtilisation/" + this.idTemp)
+                axios.delete(url() + "techinnova/api/utilisation/deleteUtilisation/" + this.idTemp)
                 .then((response) => {
                     console.log(response)
 
                     //// update materiel etat 
-                    axios.put("https://techinnova-latest.onrender.com/techinnova/api/materiel/updateMaterielOccupation/" + this.numSerieTemp + "/Libre")
+                    axios.put(url() + "techinnova/api/materiel/updateMaterielOccupation/" + this.numSerieTemp + "/Libre")
                     .then((response) => {
                         console.log(response);
                     })
@@ -243,9 +275,6 @@ export default {
             align-items: center;
             justify-content: end;
         }
-    }
-    .example:hover{
-        transform: scale(0.99);
     }
     @media screen and (max-width: 470px) {
             .field{

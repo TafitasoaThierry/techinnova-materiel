@@ -21,6 +21,7 @@
 <script>
 import "../styles/fontawesome-6.6.0-web/css/all.min.css";
 import axios from "axios";
+import { url } from './point';
 
 export default {
     name: "LoginComponent",
@@ -38,7 +39,7 @@ export default {
                 "id": this.id,
                 "pwd": this.passwd
             };
-            axios.post("https://techinnova-latest.onrender.com/techinnova/api/utilisateur/getUtilisateurByImmatricule", data)
+            axios.post(url() + "techinnova/api/utilisateur/getUtilisateurByImmatricule", data)
             .then((response) => {
                 //console.log(response.data);
                 switch(response.data) {

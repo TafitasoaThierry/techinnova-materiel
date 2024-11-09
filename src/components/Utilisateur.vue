@@ -91,6 +91,7 @@
 
 <script>
 import axios from 'axios';
+import { url } from './point';
 
 export default {
     name: "UtilisateurComponent",
@@ -138,28 +139,29 @@ export default {
 
         // read materiel from DB
         getUtilisateur() {
-            axios.get("https://techinnova-latest.onrender.com/techinnova/api/utilisateur/get/" + document.cookie)
+            axios.get(url() + "techinnova/api/utilisateur/get/" + document.cookie)
             .then( (user) => {
+                if(user.data != null) {
                 this.typeFromDB = user.data.typeUtilisateur
-
-                axios.get("https://techinnova-latest.onrender.com/techinnova/api/utilisateur/getUtilisateur")
-                .then((response) => {
-                    this.utilisateur = [];
-                    if(this.typeFromDB == "SuperUtilisateur") {
-                        for(let i = 0; i < response.data.length; i++) {
-                            if(response.data[i].typeUtilisateur != "SuperUtilisateur") {
-                                this.utilisateur.push(response.data[i]);
+                    axios.get(url() + "techinnova/api/utilisateur/getUtilisateur")
+                    .then((response) => {
+                        this.utilisateur = [];
+                        if(this.typeFromDB == "SuperUtilisateur") {
+                            for(let i = 0; i < response.data.length; i++) {
+                                if(response.data[i].typeUtilisateur != "SuperUtilisateur") {
+                                    this.utilisateur.push(response.data[i]);
+                                }
+                            }
+                        }else{ 
+                            for(let i = 0; i < response.data.length; i++) {
+                                if(response.data[i].typeUtilisateur == "Simple") {
+                                    this.utilisateur.push(response.data[i]);
+                                }
                             }
                         }
-                    }else{ 
-                        for(let i = 0; i < response.data.length; i++) {
-                            if(response.data[i].typeUtilisateur == "Simple") {
-                                this.utilisateur.push(response.data[i]);
-                            }
-                        }
-                    }
-                })
-                .catch(error => console.log(error))
+                    })
+                    .catch(error => console.log(error))
+                }
             })
             .catch((error) => (console.log(error)))
         },        
@@ -227,7 +229,7 @@ export default {
                 "typeUtilisateur": this.type,
                 "mdp": this.pwd
             }
-            axios.post("https://techinnova-latest.onrender.com/techinnova/api/utilisateur/createUtilisateur", data)
+            axios.post(url() + "techinnova/api/utilisateur/createUtilisateur", data)
             .then(response => console.log(response))
             .catch(error => console.log(error))
 
@@ -254,7 +256,7 @@ export default {
                 }
             }
             
-            axios.put("https://techinnova-latest.onrender.com/techinnova/api/utilisateur/updateUtilisateur/"+ this.immatricule, data)
+            axios.put(url() + "techinnova/api/utilisateur/updateUtilisateur/"+ this.immatricule, data)
             .then(response => console.log(response))
             .catch(error => console.log(error))
 
@@ -277,7 +279,7 @@ export default {
         // send delete utilisateur request
         remove() {
             if(confirm("Voulez-vous supprimer")) {
-                axios.delete("https://techinnova-latest.onrender.com/techinnova/api/utilisateur/deleteUtilisateur/" + this.immatriculeTemp)
+                axios.delete(url() + "techinnova/api/utilisateur/deleteUtilisateur/" + this.immatriculeTemp)
                 .then(response => console.log(response))
                 .catch(error => console.log(error))
                 for(let i = 0; i < this.utilisateur.length; i++) {
