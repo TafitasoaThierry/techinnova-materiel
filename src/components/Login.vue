@@ -42,7 +42,6 @@ export default {
             };
             axios.post(url() + "techinnova/api/utilisateur/getUtilisateurByImmatricule", data)
             .then((response) => {
-                //console.log(response.data);
                 switch(response.data) {
                     case 0: 
                         this.msg = "Erreur d'identification !";

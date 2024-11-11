@@ -4,18 +4,18 @@
       <img class="logo" src="./assets/TECHINOVA.png" alt="TECHINOVA" />
     </div>
     <div class="nav" v-show="activeNav">
-      <li class="menu"><router-link class="menu-bar" to="/">Materiel</router-link></li>
-      <li class="menu"><router-link class="menu-bar" to="/entreeSortie">Entrées-Sortie</router-link></li>
-      <li class="menu"><router-link class="menu-bar" to="/utilisateur">Utilisateur</router-link></li>
-      <li class="menu"><button class="sign-btn" @click="deconnecter()">Se déconnecter</button></li>
+      <li class="menu"><router-link class="menu-bar" to="/">MATERIEL</router-link></li>
+      <li class="menu"><router-link class="menu-bar" to="/entreeSortie">ENTREE-SORTIE</router-link></li>
+      <li class="menu"><router-link class="menu-bar" to="/utilisateur">UTILISATEUR</router-link></li>
+      <li class="menu"><button class="sign-btn" @click="deconnecter()">SE DECONNECTER</button></li>
     </div>
     <div class="dd" v-show="activeNav">
       <button class="btn btn-primary displayBtn"><i class="fa-solid fa-list"></i></button>
       <div class="display-menu">
-        <li class="menu2"><router-link class="menu-bar2" to="/">Materiel</router-link></li>
-        <li class="menu2"><router-link class="menu-bar2" to="/entreeSortie">Entrées-Sortie</router-link></li>
-        <li class="menu2"><router-link class="menu-bar2" to="/utilisateur">Utilisateur</router-link></li>
-        <li class="menu2"><button class="sign-btn2" @click="deconnecter()" style="font-size: 13px;">Se déconnecter</button></li>
+        <li class="menu2"><router-link class="menu-bar2" to="/" style="font-size: 12px;">MATERIEL</router-link></li>
+        <li class="menu2"><router-link class="menu-bar2" to="/entreeSortie" style="font-size: 12px;">ENTREE-SORTIE</router-link></li>
+        <li class="menu2"><router-link class="menu-bar2" to="/utilisateur" style="font-size: 12px;">UTILISATEUR</router-link></li>
+        <li class="menu2"><button class="sign-btn2" @click="deconnecter()" style="font-size: 12px;">SE DECONNECTER</button></li>
       </div>
     </div>
   </div>
@@ -28,7 +28,7 @@
       </div>
       <div class="add-edit" v-show="edit">
         <div class="form">
-            <legend style="text-align: center;">Mise à jours</legend>
+            <legend style="text-align: center;">Information de l'utilisateur</legend>
             <div class="form-group">
                 <label>Immatricule</label><br>
                 <input type="text" placeholder="Immatricule" name="immatricule" class="form-control" readonly v-model="id">
@@ -50,7 +50,7 @@
                 <input type="text" placeholder="Téléphone" class="form-control" v-model="tel">
             </div>
             <div class="form-group">
-              <button class="show-edit-pwd" style="padding: 8px; outline: none; border-radius: 3px; border: 1px solid rgb(172, 172, 172);" @click="showEditPwd()">Changer de mots de passe</button>
+              <button class="show-edit-pwd form-control" style="padding: 8px; outline: none; border-radius: 3px; border: 1px solid rgb(172, 172, 172);" @click="showEditPwd()">Changer de mots de passe</button>
             </div>
             <div class="form-group" v-show="pwdForAdmin">
                 <label>Ancien mots de passe</label><br>
@@ -68,8 +68,8 @@
             </div>                
         <div class="btn-groupr btn-group-lg yo">
             <!-- <button class="btn btn-message add-btn" id="control" v-on:click="deleteUser()" :disabled="((nom == '') || (prenoms == '') || (adresse == '') || (tel == ''))"><i class="fa-solid fa-remove"></i> Supprimer</button> -->
-            <button class="btn btn-success edit-btn" style="width: 180px;" id="control" v-on:click="editUser()" :disabled="((nom == '') || (prenoms == '') || (adresse == '') || (tel == ''))"><i class="fa-solid fa-edit"></i> Modifier</button>
-            <button class="btn btn-success" style="width: 180px; background-color: transparent; color: rgb(20, 143, 20);" id="control" v-on:click="cancel()"><i class="fa-solid fa-remove"></i> Annuler</button>
+            <button class="btn btn-success edit-btn form-control" style="width: 180px;" id="control" v-on:click="editUser()" :disabled="((nom == '') || (prenoms == '') || (adresse == '') || (tel == ''))"><i class="fa-solid fa-edit"></i> Modifier</button>
+            <button class="btn btn-success form-control" style="width: 180px; background-color: transparent; color: rgb(20, 143, 20);" id="control" v-on:click="cancel()"><i class="fa-solid fa-remove"></i> Annuler</button>
         </div>
         </div>
       </div>
@@ -127,9 +127,6 @@ export default {
     }, 1000)
   },
   methods: {
-    setDisplayMenu() {
-
-    },
     showEditPwd() {
       this.pwdForAdmin = (this.pwdForAdmin == false) ? true : false;
       this.allowChangePwd = (this.allowChangePwd == false) ? true : false;
@@ -294,7 +291,7 @@ export default {
     justify-content: center;
     .form{
         width: 400px;
-        background-color: #d3d3d3;
+        background-color: #ffffff;
         padding: 16px;
         transition: all 0.2s;
         .form-control{
@@ -343,9 +340,7 @@ export default {
       .btn-edit-info{
         outline: none;
         background-color: transparent;
-        padding: 8px 10px;
-        border: 1px solid $co2;
-        border-radius: 3px;
+        border: none;
         color: #ffffff;
       }
     }

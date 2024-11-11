@@ -1,11 +1,11 @@
 <template>
     <div class="container">
         <div class="field">
-            <div class="add-field">
+            <div class="add-field" v-show="typeFromDB == 'SuperUtilisateur'">
                 <a href="#add"><button class="btn btn-primary add-btn" v-on:click="showAddForm()">Ajouter</button></a>
             </div>
             <div class="search-field">
-                <input type="text" placeholder="IM, nom, prenoms" class="search-input">
+                <input type="text" placeholder="IM, nom, prenoms" class="search-input" v-model="search" @keyup="searchMateriel()">
                 <button class="search-btn"><i class="fa-solid fa-search"></i></button>
             </div>
         </div>
@@ -19,10 +19,10 @@
                         <th>Tel</th>
                         <th>Adresse</th>
                         <th>Type</th>
-                        <th colspan="2">Action</th>
+                        <th colspan="2" v-show="typeFromDB == 'SuperUtilisateur'">Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody v-show="nullSearch">
                     <tr v-for="utilisateur in utilisateur" v-bind:key="utilisateur.immatricule">
                         <td>{{ utilisateur.immatricule }}</td>
                         <td>{{ utilisateur.nom }}</td>
@@ -30,12 +30,25 @@
                         <td>{{ utilisateur.tel }}</td>
                         <td>{{ utilisateur.adresse }}</td>
                         <td>{{ utilisateur.typeUtilisateur }}</td>
-                        <td><a href="#add"><button class="edit-btn btn" @click="showEditForm(immatriculeTemp = utilisateur.immatricule);"><i class="fa-solid fa-edit"></i></button></a></td>
-                        <td><button class="remove-btn btn" @click="remove(immatriculeTemp = utilisateur.immatricule);"><i class="fa-solid fa-remove"></i></button></td>
+                        <td v-show="typeFromDB == 'SuperUtilisateur'"><a href="#add"><button class="edit-btn btn" @click="showEditForm(immatriculeTemp = utilisateur.immatricule);"><i class="fa-solid fa-edit"></i></button></a></td>
+                        <td v-show="typeFromDB == 'SuperUtilisateur'"><button class="remove-btn btn" @click="remove(immatriculeTemp = utilisateur.immatricule);"><i class="fa-solid fa-remove"></i></button></td>
                     </tr>
                 </tbody>
-            </table>
-        </div>
+                <tbody v-show="nullSearch == false">
+                    <tr v-for="utilisateur in utilisateurSearch" v-bind:key="utilisateur.immatricule">
+                        <td>{{ utilisateur.immatricule }}</td>
+                        <td>{{ utilisateur.nom }}</td>
+                        <td>{{ utilisateur.prenoms }}</td>
+                        <td>{{ utilisateur.tel }}</td>
+                        <td>{{ utilisateur.adresse }}</td>
+                        <td>{{ utilisateur.typeUtilisateur }}</td>
+                        <td v-show="typeFromDB == 'SuperUtilisateur'"><a href="#add"><button class="edit-btn btn" @click="showEditForm(immatriculeTemp = utilisateur.immatricule);"><i class="fa-solid fa-edit"></i></button></a></td>
+                        <td v-show="typeFromDB == 'SuperUtilisateur'"><button class="remove-btn btn" @click="remove(immatriculeTemp = utilisateur.immatricule);"><i class="fa-solid fa-remove"></i></button></td>
+                    </tr>
+                </tbody>
+                </table>
+                <p v-show="utilisateurSearch.length == 0 && nullSearch == false" style="text-align: center; opacity: 0.6; font-size: 22px; padding: 30px 0; color:#ffffff;">Résulat introuvable</p>
+            </div>
     </div>
     <div class="add-edit" v-show="active" id="add" style="margin-bottom: 5%;">
         <div class="form">
@@ -116,10 +129,42 @@ export default {
             disabled: true,
             pwdForAdmin: false,
             showWarning: false,
-            typeFromDB: ""
+            typeFromDB: "",
+
+            search: "",
+            utilisateurSearch: [],
+            nullSearch: true
         };
     },
     methods: {
+        getUtilisation() {
+            axios.get(url() + "techinnova/api/utilisateur/get/" + document.cookie)
+            .then( (user) => {
+                if(user.data != null) {
+                    this.typeFromDB = user.data.typeUtilisateur;
+                }
+            })
+            .catch((error) => (console.log(error)))
+        },
+
+        // input search
+        searchMateriel() {
+            if(this.search.length == 0){
+                this.nullSearch = true;
+            }else{
+                this.nullSearch = false;
+
+                let pattern = new RegExp(this.search, "i");
+                let n = this.utilisateur.length;
+                this.utilisateurSearch = [];
+                for(let i = 0; i < n; i++) {
+                    if((this.utilisateur[i].immatricule.search(pattern) >= 0) || (this.utilisateur[i].nom.search(pattern) >= 0) || (this.utilisateur[i].prenoms.search(pattern) >= 0)) {
+                        this.utilisateurSearch.push(this.utilisateur[i]);
+                    }
+                }
+            }
+        },
+        
         // check IM if exist onkeyup
         checkIM() {
             for(let i = 0; i < this.utilisateur.length; i++) {
@@ -274,6 +319,8 @@ export default {
             }
             this.clearForm();
             this.cancel();
+            this.nullSearch = true;
+            this.search = "";
         },
 
         // send delete utilisateur request
@@ -288,6 +335,8 @@ export default {
                             this.utilisateur[j] = this.utilisateur[j+1];
                         }
                         this.utilisateur.pop();
+                        this.nullSearch = true;
+                        this.search = "";
                         break;
                     }
                 }
@@ -301,7 +350,7 @@ export default {
         
         setInterval(() => {
             this.getUtilisateur();
-        }, 1500);
+        }, 1500); // 2.5GHz --> 3GHz
     }
 }
 </script>

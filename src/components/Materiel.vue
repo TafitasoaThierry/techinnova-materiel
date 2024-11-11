@@ -39,11 +39,12 @@
         </div>
         <div class="box" id="search-box" v-show="search.length > 0">
             <ul class="box-content" v-for="materielSearch in  materielSearch" v-bind:key="materielSearch.numSerie">
-                <li><img  v-bind:src="materielSearch.image" class="img" width="100%" height="200px" style="border: 1px solid rgba(0,0,0,0.3); border-radius: 3px;"></li>
+                <li><img  v-bind:src="materielSearch.image" class="img" width="100%" height="200px" style="border: 1px solid #595959; border-radius: 3px;"></li>
                 <li style="margin-top: 3px;">{{ materielSearch.numSerie }}</li>
-                <li>Nom: {{ materielSearch.nomMateriel }}</li>
-                <li>Marque: {{ materielSearch.marque }}</li>
-                <li>Etat: {{ materielSearch.etat }}</li>
+                <li>{{ materielSearch.nomMateriel }} {{ materielSearch.marque }}</li>
+                <li v-if="materielSearch.etat == 'Bon'">Etat : <i class="fa-solid fa-star" style="color: #ffff00;"></i> <i class="fa-solid fa-star" style="color: #ffff00;"></i> <i class="fa-solid fa-star" style="color: #ffff00;"></i></li>
+                <li v-if="materielSearch.etat == 'Moyen'">Etat : <i class="fa-solid fa-star" style="color: #ffff00;"></i> <i class="fa-solid fa-star" style="color: #ffff00;"></i> <i class="fa-solid fa-star"></i></li>
+                <li v-if="materielSearch.etat == 'Détruit'">Etat : <i class="fa-solid fa-star" style="color: #ffff00;"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i></li>
                 <li v-if="materielSearch.occupation == 'Libre'">Occupation: <span style="color: green;" >{{ materielSearch.occupation }}</span></li>
                 <li v-else>Occupation: <span style="color: red;">{{ materielSearch.occupation }}</span></li>
                 <li style="display: flex; justify-content: right;">
@@ -53,7 +54,7 @@
                 <!-- <li>Prix: {{ materiel.prix }}</li> -->
             </ul>
         </div>
-        <p v-show="nullSearch" style="text-align: center; opacity: 0.6;; font-size: 22px; padding: 30px 0; color:#ffffff;">Résulat introuvable</p>
+        <p v-show="nullSearch" style="text-align: center; opacity: 0.6; font-size: 22px; padding: 30px 0; color:#ffffff;">Résulat introuvable</p>
     </div>
     <div class="add-edit" v-show="active" id="add">
         <div class="form">
@@ -112,9 +113,9 @@
             </div>
             <label for="Nom du materiel">Materiel</label>
             <div class="materiel-list">
-                <table class="table">
-                    <tr>
-                        <th>Nom materiel</th>
+                <table class="table table-bordered">
+                    <tr style="color: rgb(59, 105, 255);">
+                        <th>Nom du materiel</th>
                         <th>N°Serie</th>
                     </tr>
                     <tr v-for="i in materielForActivite" :key="i.numSerie" > 
@@ -125,7 +126,8 @@
             </div>
             <div class="form-group">
                 <label>Utilisateur</label>
-                <input type="text" placeholder="Immatricule de l'utilisateur" class="form-control" v-model="utilisateur">
+                <input type="text" placeholder="Immatricule de l'utilisateur" class="form-control" @keyup="checkUtilisateur()" v-model="utilisateur">
+                <p><small style="color: red;" v-show="this.utilisateurChecked == false && this.utilisateur.length > 0">Utilisateur n'existe pas</small></p>
             </div>
             <div class="form-group">
                 <label>Lieu de l'activité</label>
@@ -136,8 +138,8 @@
                 <input type="date" placeholder="Date de sortie" class="form-control" v-model="dateSS">
             </div>
             <div class="btn-groupr btn-group-lg">
-                <button class="btn btn-warning add-btn" style="width: 220px;" v-on:click="makeActivite()" :disabled="((materielForActivite.length == 0)  || (this.utilisateur == '') || (this.nomActivite == '') || (this.lieu == ''))"><i class="fa-solid fa-check"></i> Valider</button>
-                <button class="btn btn-primary" style="width: 220px;" v-on:click="clearActivite()"><i class="fa-solid fa-remove"></i> Effacer</button>
+                <button class="btn btn-primary add-btn" style="width: 220px;" v-on:click="makeActivite()" :disabled="((this.utilisateurChecked == false) || (materielForActivite.length == 0)  || (this.utilisateur == '') || (this.nomActivite == '') || (this.lieu == ''))"><i class="fa-solid fa-check"></i> Valider</button>
+                <button class="btn btn-primary" style="width: 220px; background-color: transparent; color: rgb(119, 119, 255);" v-on:click="clearActivite()"><i class="fa-solid fa-remove"></i> Effacer</button>
             </div>
         </div>
     </div>
@@ -191,10 +193,22 @@ export default {
             utilisateur: "",
             refActivite: "",
             etatSortie: "",
-            dateSS: ""
+            dateSS: "",
+            utilisateurChecked: false
         }
     },
     methods: {
+        checkUtilisateur() {
+            axios.get(url() + "techinnova/api/utilisateur/get/" + this.utilisateur)
+            .then((response) => {
+                if(response.data == null){
+                    this.utilisateurChecked = false;
+                }else{
+                    this.utilisateurChecked = true;
+                }
+            })
+            .catch(error => console.log(error))
+        },
         // SEND DATA REQUEST
         makeActivite() {
             // create activite
@@ -316,6 +330,7 @@ export default {
             this.materielForActivite = [];
             this.numSerieForActivite = "";
             this.nomMaterielForActivite = "";
+            this.utilisateurChecked = false;
 
             this.nomActivite = ""
             this.nomMateriel = "";
@@ -370,7 +385,7 @@ export default {
                 }
                 if(detector == 0) {
                     this.materielForActivite.push({"nomMateriel":this.nomMaterielForActivite, "numSerie":this.numSerieForActivite});
-                    console.log("Materiel = " + this.materielForActivite);
+                    //console.log("Materiel = " + this.materielForActivite);
                 }
             }else{
                 this.materielForActivite.push({"nomMateriel":this.nomMaterielForActivite, "numSerie":this.numSerieForActivite});
@@ -624,18 +639,20 @@ export default {
                             this.materiel[j] = this.materiel[j + 1];
                         }
                         this.materiel.pop();
+                        this.nullSearch = false;
+                        this.search = "";
                         break;
                     }
                 }
             }
         },
 
-        // CACHER LA FORMULAIRE LORSQU'ON CLIQUE SUR LE BTN CANCEL
+        // HIDE FORM
         cancel() {
             this.active = false;
         },
 
-        // AFFICHER LA FORMULAIRE DE MISE A JOUR (MODIFICATION)
+        // DISPLAY UPDATE FORM
         edit() {
             this.active = true;
         }
@@ -645,7 +662,7 @@ export default {
 
         setInterval(() => {
             this.getMateriel();
-        }, 500);
+        }, 1500); // 2.5GHz --> 3GHz
     }
 }
 </script>
@@ -830,7 +847,7 @@ export default {
         justify-content: center;
         .form{
             width: 400px;
-            background-color: #d3d3d3;
+            background-color: #ffffff;
             padding: 16px;
             transition: all 0.2s;
             .form-control{
