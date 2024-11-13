@@ -98,9 +98,9 @@
                 </div>
             </form>                
             <div class="btn-groupr btn-group-lg">
-                <button class="btn btn-warning add-btn" v-on:click="addMateriel()" :disabled="((legend == 'Modifier un materiel')  || (this.numSerieExist == true) || (this.img == null) || (numSerie == '') || (nom == '') || (marque == '') || (prix == ''))"><i class="fa-solid fa-add"></i> Ajouter</button>
-                <button class="btn btn-success edit-btn" v-on:click="editMateriel()" :disabled="((legend == 'Ajout de materiel') || (numSerie == '') || (nom == '') || (marque == '') || (prix == ''))"><i class="fa-solid fa-edit"></i><a href="#iii"></a> Modifier</button>
-                <button class="btn btn-primary" v-on:click="cancel()" ><i class="fa-solid fa-remove"></i> Annuler</button>
+                <button class="btn btn-primary add-btn" v-on:click="addMateriel()" :disabled="((legend == 'Modifier un materiel')  || (this.numSerieExist == true) || (this.img == null) || (numSerie == '') || (nom == '') || (marque == '') || (prix == ''))"><i class="fa-solid fa-add"></i> Ajouter</button>
+                <button style="background-color: transparent; color: #2088ff;" class="btn btn-primary edit-btn" v-on:click="editMateriel()" :disabled="((legend == 'Ajout de materiel') || (numSerie == '') || (nom == '') || (marque == '') || (prix == ''))"><i class="fa-solid fa-edit"></i><a href="#iii"></a> Modifier</button>
+                <button style="background-color: transparent; color: #2088ff; border: none;" class="btn btn-primary" v-on:click="cancel()" ><i class="fa-solid fa-remove"></i> Annuler</button>
             </div>
         </div>
     </div>
@@ -139,7 +139,7 @@
             </div>
             <div class="btn-groupr btn-group-lg">
                 <button class="btn btn-primary add-btn" style="width: 220px;" v-on:click="makeActivite()" :disabled="((this.utilisateurChecked == false) || (materielForActivite.length == 0)  || (this.utilisateur == '') || (this.nomActivite == '') || (this.lieu == ''))"><i class="fa-solid fa-check"></i> Valider</button>
-                <button class="btn btn-primary" style="width: 220px; background-color: transparent; color: rgb(119, 119, 255);" v-on:click="clearActivite()"><i class="fa-solid fa-remove"></i> Effacer</button>
+                <button class="btn btn-primary" style="width: 220px; background-color: transparent; color: #2088ff;" v-on:click="clearActivite()"><i class="fa-solid fa-remove"></i> Effacer</button>
             </div>
         </div>
     </div>
